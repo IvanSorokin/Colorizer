@@ -1,0 +1,15 @@
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\bin\Debug\Colorizator.exe.config
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\bin\Debug\Colorizator.exe
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\bin\Debug\Colorizator.pdb
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\obj\Debug\Colorizator.csprojResolveAssemblyReference.cache
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\obj\Debug\MainWindow.baml
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\obj\Debug\MainWindow.g.cs
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\obj\Debug\App.g.cs
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\obj\Debug\Colorizator_MarkupCompile.cache
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\obj\Debug\Colorizator.g.resources
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\obj\Debug\Colorizator.Properties.Resources.resources
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\obj\Debug\Colorizator.csproj.GenerateResource.Cache
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\obj\Debug\Colorizator.exe
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\obj\Debug\Colorizator.pdb
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\obj\Debug\ViewWindow.baml
+C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\obj\Debug\ViewWindow.g.cs

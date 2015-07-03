@@ -1,0 +1,1 @@
+-i "D:\US\Input\01\imagefile.jpg" -vf curves=r='0.50/0.50':g='0.50/0.50':b='0.49/0.50' "C:\Users\iwan954\Documents\Visual Studio 2013\Projects\Colorizator\Colorizator\bin\Debug\tmp1.jpg" -y
