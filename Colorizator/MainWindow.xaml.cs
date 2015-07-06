@@ -24,10 +24,11 @@ namespace Colorizator
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string pattern = @"-i ""{0}"" -vf curves=r='0.{1}/0.{2}':g='0.{3}/0.{4}':b='0.{5}/0.{6}' ""{7}"" -y";
+        private string fullCurvesPattern = @"-i ""{0}"" -vf curves=r='0.{1}/0.{2}':g='0.{3}/0.{4}':b='0.{5}/0.{6}' ""{7}"" -y";
         private string curvesModePattern = @"curves=r='0.{1}/0.{2}':g='0.{3}/0.{4}':b='0.{5}/0.{6}'";
         private string directoryPath = "";
         private string initialImagePath = "";
+        private string currentState = "";
         public InitialSampleWindow InitialSample;
         public InitialSampleWindow ResultSample;
 
@@ -52,18 +53,17 @@ namespace Colorizator
             InitialSample = new InitialSampleWindow();
             ResultSample = new InitialSampleWindow();
             InitialSample.Owner = this;
-            InitialSample.Title = "Current view";
-            ResultSample.Title = "Filtered view";
             ResultSample.Owner = this;
+            InitialSample.Title = "Current view";
+            ResultSample.Title = "Filtered view";           
         }
 
-        private void Colorize(string patternForCommand)
+        private void Colorize(string patternForCommand, object[] args)
         {
-            if (File.Exists(directoryPath + "\\tmp1.jpg"))
-                File.Delete(directoryPath + "\\tmp1.jpg");
-            var res = ApplyCommand(patternForCommand, GetColorsDelta());
+            var res = ApplyCommand(patternForCommand, args);
             ChangeTmp(directoryPath + @"\tmp1.jpg");
         }
+
 
         private void ChangeTmp(string imgPath)
         {
@@ -110,14 +110,23 @@ namespace Colorizator
 
         private void Slider_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            Colorize(pattern);
+            ApplyOptionsState();
+        }
+
+        private void RefreshSliders()
+        {
+            blueSlider.Value = 50;
+            redSlider.Value = 50;
+            greenSlider.Value = 50;
+            SaturationBar.Value = 100;
+            FilterSelector.SelectedIndex = -1;
+            ApplyOptionsState();
         }
 
         private void CurvesShow_Click(object sender, RoutedEventArgs e)
         {
-            var result = string.Format(curvesModePattern, GetColorsDelta());
-            Clipboard.SetText(result);
-            MessageBox.Show(string.Format(curvesModePattern, GetColorsDelta()) + " Copied to clipboard.");    
+            Clipboard.SetText(currentState);
+            MessageBox.Show(currentState + " Copied to clipboard.");    
         }
 
         private void ExtendButtonInitialSample_Click(object sender, RoutedEventArgs e)
@@ -142,20 +151,55 @@ namespace Colorizator
                 this.StartIMG.Source = new BitmapImage(new Uri(dialog.FileName));
                 this.InitialSample.ViewImage.Source = this.StartIMG.Source;
                 ChangeTmp(initialImagePath);
-                blueSlider.Value = 50;
-                redSlider.Value = 50;
-                greenSlider.Value = 50;
+                RefreshSliders();
             }
         }
 
         private void FilterSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var command = string.Format(@"-i ""{0}"" -vf curves=psfile=""{1}.acv"" ""{2}"" -y", 
-                                            initialImagePath,
-                                            (directoryPath + @"\filters\" + FilterSelector.SelectedItem).Replace("\\", "/").Replace(":", @"\\:"),
-                                            directoryPath+ @"\tmp1.jpg");
-            Colorize(command);
-            Clipboard.SetText(command);
+            ApplyOptionsState();
+        }
+
+        private void SaturationBar_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ApplyOptionsState();
+        }
+
+        private void ApplyOptionsState()
+        {
+            //Applying Colors
+            Colorize(fullCurvesPattern, GetColorsDelta());
+
+            //Applying Saturation
+            var saturationValue = Math.Round(SaturationBar.Value / 100, 2);
+            var pattern = @"-i ""{0}"" -filter_complex eq=saturation={1} ""{2}"" -y";
+            var args = new object[] { directoryPath + "\\tmp1.jpg", saturationValue, directoryPath + "\\tmp1.jpg" };
+            Colorize(pattern, args);
+
+            //Applying Filter
+            var filterPattern = @"-i ""{0}"" -vf curves=psfile=""{1}.acv"" ""{2}"" -y";
+            //ffmpeg fix with escaping >_<
+            var pathToFilter = (directoryPath + @"\filters\" + FilterSelector.SelectedItem).Replace("\\", "/").Replace(":", @"\\:");
+            var command = string.Format(filterPattern,
+                                            directoryPath + @"\tmp1.jpg",
+                                            pathToFilter,
+                                            directoryPath + @"\tmp1.jpg");
+            var filterCommand = string.Format(@"curves=psfile={0}.acv", pathToFilter);
+            Colorize(command, new string[] { "empty" });
+
+            //Create command chain
+            currentState = CreateFinalChainCommand(string.Format(curvesModePattern, GetColorsDelta()), saturationValue, filterCommand);
+        }
+
+        private string CreateFinalChainCommand(string colorOptions, double saturationOption, string filterOption)
+        {
+            var finalChainCommand = string.Format(@"-vf ""{0}, eq=saturation={1}, {2}""", colorOptions, saturationOption, filterOption);
+            return finalChainCommand;
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshSliders();
         }
     }
 }
