@@ -184,7 +184,7 @@ namespace Colorizator
                                             directoryPath + @"\tmp1.jpg",
                                             pathToFilter,
                                             directoryPath + @"\tmp1.jpg");
-            var filterCommand = string.Format(@"curves=psfile={0}.acv", pathToFilter);
+            var filterCommand = FilterSelector.SelectedIndex != -1 ? string.Format(@", curves=psfile={0}.acv", pathToFilter) : "" ;
             Colorize(command, new string[] { "empty" });
 
             //Create command chain
@@ -193,7 +193,7 @@ namespace Colorizator
 
         private string CreateFinalChainCommand(string colorOptions, double saturationOption, string filterOption)
         {
-            var finalChainCommand = string.Format(@"-vf ""{0}, eq=saturation={1}, {2}""", colorOptions, saturationOption, filterOption);
+            var finalChainCommand = string.Format(@"-vf ""{0}, eq=saturation={1}{2}""", colorOptions, saturationOption, filterOption);
             return finalChainCommand;
         }
 
